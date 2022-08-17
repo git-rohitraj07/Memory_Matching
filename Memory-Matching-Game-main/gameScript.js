@@ -1,7 +1,12 @@
 var em = ["💐","🌹","🌻","🏵️","🌺","🌴","🌈","🍓","🍒","🍎","🍉","🍊","🥭","🍍","🍋","🍏","🍐","🥝","🍇","🥥","🍅","🌶️","🍄","🧅","🥦","🥑","🍔","🍕","🧁","🎂","🍬","🍩","🍫","🎈"];
 //Shuffling above array
 var tmp, c, p = em.length;
+var au1=new Audio("sound/wrong.ogg");
+var au2=new Audio("sound/flipback.wav");
+var au3=new Audio("sound/click.wav");
+var au4=new Audio("sound/intro.mp3");
 if(p) while(--p) {
+
    c = Math.floor(Math.random() * (p + 1));
    tmp = em[c];
    em[c] = em[p];
@@ -27,7 +32,8 @@ window.onload = function() {
 
 //Starting the game
 function start(r,l) {
-    //Timer and moves
+au4.play();
+ 
     min=0, sec=0, moves=0;
     $("#time").html("Time: 00:00");
     $("#moves").html("Moves: 0");
@@ -41,8 +47,37 @@ function start(r,l) {
       else 
         $("#time").html("Time: 0"+min+":"+sec);
     }, 1000);
+    $("#close").click(function(){
+      $("#l").html(`<center><div id="iol"><h2>Congrats!</h2><p style="font-size:23px;padding:10px;">You completed the ${mode} mode in ${moves} moves. It took you ${time}.</p><p style="font-size:18px">Comment Your Score!<br/>Play Again ?</p><button onclick="start(3, 4)">3 x 4</button> <button onclick="start(4, 4)" style="w">4 x 4</button><button onclick="start(4, 5)">4 x 5</button><button onclick="start(5, 6)">5 x 6</button><button onclick="start(6, 6)">6 x 6</button></div></center>`);
+      $("#l").fadeIn(750);
+    clearInterval(time);
+      
+    })
+
+    // $("#end").click(function(){
+    //   rem=0;
+    //   if (rem==0) {
+    //     clearInterval(time);
+    //     if (min==0) {
+    //         time = `${sec} seconds`;
+    //     }
+    //     else {
+    //         time = `${min} minute(s) and ${sec} second(s)`;
+    //     }
+    //     setTimeout(function() {
+    //       au4.pause();
+    //         $("#ol").html(`<center><div id="iol"><h2>Congrats!</h2><p style="font-size:23px;padding:10px;">You have not completed the game.<br/>Play Again ?</p><button onclick="start(3, 4)">3 x 4</button> <button onclick="start(4, 4)" style="w">4 x 4</button><button onclick="start(4, 5)">4 x 5</button><button onclick="start(5, 6)">5 x 6</button><button onclick="start(6, 6)">6 x 6</button></div></center>`);
+    //         $("#ol").fadeIn(750);
+    //     }, 1500);
+    //      }
+      
+    // })
+
+
+
     rem=r*l/2, noItems=rem;
     mode = r+"x"+l;
+  
     //Generating item array and shuffling it
     var items = [];
     for (var i=0;i<noItems;i++)
@@ -71,7 +106,9 @@ function start(r,l) {
     
     //Hiding instructions screen
     $("#ol").fadeOut(500);
+    
 }
+
 
 //Function for flipping blocks
 function change(x) {
@@ -79,12 +116,13 @@ function change(x) {
   let i = "#"+x+" .inner";
   let f = "#"+x+" .inner .front";
   let b = "#"+x+" .inner .back";
-  
+
   //Dont flip for these conditions
   if (turn==2 || $(i).attr("flip")=="block" || ppID==x) {}
   
   //Flip
   else {
+    au3.play();
     $(i).css(t, flip);
     if (turn==1) {
       //This value will prevent spam clicking
@@ -92,10 +130,12 @@ function change(x) {
       
       //If both flipped blocks are not same
       if (pre!=$(b).text()) {
+       
          setTimeout(function() {
             $(pID).css(t, flipBack);
             $(i).css(t, flipBack);
-            ppID=0;
+            ppID=0; 
+
          },1000);
       }
       
@@ -104,6 +144,7 @@ function change(x) {
           rem--;
           $(i).attr("flip", "block");
           $(pID).attr("flip", "block");
+          au2.play();
       }
       
       setTimeout(function() {
@@ -120,7 +161,24 @@ function change(x) {
       pID = "#"+x+" .inner";
       turn=1;
     }
-    
-   
+    if (rem==0) {
+      clearInterval(time);
+      if (min==0) {
+          time = `${sec} seconds`;
+      }
+      else {
+          time = `${min} minute(s) and ${sec} second(s)`;
+      }
+      setTimeout(function() {
+        au4.pause();
+          $("#ol").html(`<center><div id="iol"><h2>Congrats!</h2><p style="font-size:23px;padding:10px;">You completed the ${mode} mode in ${moves} moves. It took you ${time}.</p><p style="font-size:18px">Comment Your Score!<br/>Play Again ?</p><button onclick="start(3, 4)">3 x 4</button> <button onclick="start(4, 4)" style="w">4 x 4</button><button onclick="start(4, 5)">4 x 5</button><button onclick="start(5, 6)">5 x 6</button><button onclick="start(6, 6)">6 x 6</button></div></center>`);
+          $("#ol").fadeIn(750);
+      }, 1500);
+       }
   }
 }
+
+
+ 
+
+

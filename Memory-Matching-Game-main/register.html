@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE-edge">
+    <meta name="viewport" content="width=device-width,intial-scale=1.0">
+    <!-- <tilte>Document</tilte> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        body{
+            margin: 0px;
+            display: flex;
+            background-color: #8eb6fc;
+            justify-content: center;
+            height: 100vh;
+            width: 100wh;
+            align-items: center;
+        }
+        .topright
+        {
+            position: absolute;
+        top: 50px;
+        /* border: 3px solid green; */
+        }
+    </style>
+</head>
+<body>
+    <div class="topright" >
+        <h2>Memory Matching Game</h2>
+    </div>
+
+    <div>
+        <h3>Sign_Up</h3>
+        <input type="text" placeholder="Full Name" id="name" class="form-control mb-3">
+        <input type="text" placeholder="Email" id="mail" class="form-control mb-3">
+        <input type="text" placeholder="User Name" id="uname" class="form-control mb-3">
+        <input type="password" placeholder="Password" id="pass" class="form-control mb-3">
+        <button type="text" id="btn1" class="btn btn-outline-primary mb-3">Sign_Up</button>
+        <a href="login.html" class="badge badge-secondary">Have a Account!</a>
+    </div>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+       // import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+        //import { getDatabase,set,ref,update } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
+        //import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-analytics.js";
+        // Import the functions you need from the SDKs you need
+      //  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+        import { getDatabase,set,ref,update } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-database.js";
+        import { getAuth, createUserWithEmailAndPassword ,signInWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/9.8.2/firebase-auth.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+        
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        // const firebaseConfig = {
+        //     apiKey: "AIzaSyBde6WdzgqW0YXxcWSDyRrdVKI0wK_JpWg",
+        //     authDomain: "memorymatching-dfea9.firebaseapp.com",
+        //     databaseURL : "https://memorymatching-dfea9-default-rtdb.firebaseio.com",
+        //     projectId: "memorymatching-dfea9",
+        //     storageBucket: "memorymatching-dfea9.appspot.com",
+        //     messagingSenderId: "70233266521",
+        //     appId: "1:70233266521:web:24e159e6ee37a73cd69448",
+        //     measurementId: "G-DEDNKTHVVD"
+        // };
+
+        const firebaseConfig = {
+    apiKey: "AIzaSyAnc2Yj6Os_jn57TZk9RgLycrSzNCFXO6w",
+    authDomain: "memorymatching-9ae90.firebaseapp.com",
+    databaseURL:"https://memorymatching-9ae90-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "memorymatching-9ae90",
+    storageBucket: "memorymatching-9ae90.appspot.com",
+    messagingSenderId: "917576938365",
+    appId: "1:917576938365:web:d30dbd82226fbe56c79214",
+    measurementId: "G-86P95WZHX1"
+  };
+        
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        var db=getDatabase(app);
+        const auth = getAuth()
+        
+
+
+//     Registeration 
+
+       var name,email,user,password;
+       var btn=document.getElementById('btn1');
+
+
+    //    Validation
+
+    function Validate(){
+        let namergx=/^[a-zA-Z\s]+$/;
+        let emailrgx=/^[a-zA-Z0-9]+@(gmail|outlook)\.com$/;
+        let userrgx=/^[a-zA-Z0-9]{6,}$/;
+
+        if(!namergx.test(name))
+        {
+            alert("name should contains only alphabet");
+            return false;
+        }
+        
+       else if(!emailrgx.test(email))
+        {
+            alert("invalid format");
+            return false;
+        }
+        
+        else if(!userrgx.test(user))
+        {
+            alert("should be of length atleast 6");
+            return false;
+        }
+        return true;
+    }
+
+    function Register()
+    {
+        // if(!Validate())
+        // return;
+       
+
+        // const dbref=ref(db);
+        // get(child(dbref,"UserList/"+ user.value)).then((snapshot)=>{
+        //     if(snapshot.exists())
+        //      alert("User already Exist");
+        //      else
+        //      {
+        //          set(ref(db,"UserList/"+ user.value),
+        //          {
+        //              fullname : name.value,
+        //              email : email.value,
+        //              username : user.value,
+        //              password : password.value
+        //          })
+        //          .then(()=>
+        //          {
+        //              alert("User added successfully");
+        //          })
+        //          .catch((error)=>
+        //          {
+        //              alert("error" + error);
+        //          })
+        //      }
+
+        // })
+    }
+
+    btn.addEventListener('click',(e)=>
+    {
+        
+         name=document.getElementById('name').value;
+         email=document.getElementById('mail').value;
+         user=document.getElementById('uname').value;
+         password=document.getElementById('pass').value;
+       if(Validate()==false)return;
+       
+            createUserWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+  
+    const user = userCredential.user;
+    set(ref(db, 'users/' + user.uid),{
+          username: name,
+          email: email,
+          password : password
+      })
+    alert("Success");
+    window.location.href="login.html";
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    alert(errorMessage);
+    // ..
+  });
+      
+    });
+    </script>
+ 
+</body>
+</html>
